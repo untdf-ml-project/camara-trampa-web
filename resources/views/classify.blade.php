@@ -68,6 +68,31 @@
                                 </p>
                             </div>
                         </div>
+
+                        @if ($picture->isValidated())
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                <div class="btn-group mb-3 btn-block" data-toggle="buttons">
+                                    <label class="btn btn-outline-success active">
+                                        @if ($picture->day)
+                                            <img src="{{asset('images/sun.png')}}"> Es de día
+                                        @else
+                                            <img src="{{asset('images/moon.png')}}"> Es de noche
+                                        @endif
+                                    </label>
+
+                                    <label class="btn btn-outline-success active">
+                                        @if ($picture->animal)
+                                            <img src="{{asset('images/cow.png')}}"> Con animales
+                                        @else
+                                            <img src="{{asset('images/tree.png')}}"> Sin animales
+                                        @endif
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                       @endif
+
                         <a href="{{route('pictures.edit', $picture->filename)}}" class="btn btn-outline-success btn-block">Validar</a>
                     </div>
                 </div>

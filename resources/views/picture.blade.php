@@ -114,10 +114,7 @@
                                     @endif
                                 </label>
                             </div>
-
                         </div>
-
-
                        @endif
 
                     @endif
