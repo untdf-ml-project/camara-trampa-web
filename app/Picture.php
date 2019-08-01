@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Picture extends Model
 {
-    public function categories()
+    public function classifications()
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Classification::class);
     }
 
     public function getResumenAttribute()
     {
         return (object)[
-            'dia' => $this->categories->where('day', 1)->count(),
-            'noche' => $this->categories->where('day', 0)->count(),
-            'animales' => $this->categories->where('animal', 1)->count(),
-            'sinanimales' => $this->categories->where('animal', 0)->count(),
+            'dia'         => $this->classifications->where('day', 1)->count(),
+            'noche'       => $this->classifications->where('day', 0)->count(),
+            'animales'    => $this->classifications->where('animal', 1)->count(),
+            'sinanimales' => $this->classifications->where('animal', 0)->count(),
         ];
 
     }
@@ -31,7 +31,6 @@ class Picture extends Model
     {
         return ($this->resumen->animales > $this->resumen->sinanimales) ? 1 : 0;
     }
-
 
     public function isValidated()
     {

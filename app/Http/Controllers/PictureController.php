@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Picture;
-use App\Category;
+use App\Classification;
 
 class PictureController extends Controller
 {
@@ -25,7 +25,7 @@ class PictureController extends Controller
         if ($picture) {
             return view('picture', [
                 'picture' => $picture,
-                'count' => Category::count()
+                'count' => Classification::count()
             ]);
         }
         else {
@@ -40,12 +40,12 @@ class PictureController extends Controller
      */
     public function edit($filename)
     {
-        $picture = Picture::where('filename', $filename)->with('categories')->first();
+        $picture = Picture::where('filename', $filename)->with('clasifications')->first();
 
         if ($picture) {
             return view('picture', [
                 'picture' => $picture,
-                'count' => Category::count(),
+                'count' => Classification::count(),
             ]);
         }
         else {
@@ -65,7 +65,7 @@ class PictureController extends Controller
         return view('classify', [
             'status' => $status,
             'pictures' => $pictures,
-            'responses' => Category::count(),
+            'responses' => Classification::count(),
             'photos' => Picture::count(),
         ]);
     }
@@ -106,12 +106,12 @@ class PictureController extends Controller
             $picture = Picture::where('filename', $request->filename)->first();
 
             if (!$picture->validated || auth()->user()) {
-                $category = new Category();
-                $category->filename = $request->filename;
-                $category->day = $request->day;
-                $category->animal = $request->animal;
-                $category->picture_id = $picture->id;
-                $category->save();
+                $clasification = new Classification();
+                $clasification->filename = $request->filename;
+                $clasification->day = $request->day;
+                $clasification->animal = $request->animal;
+                $clasification->picture_id = $picture->id;
+                $clasification->save();
 
                 if (auth()->user()) {
                     $picture->validated = 1;
@@ -119,12 +119,12 @@ class PictureController extends Controller
                     $picture->animal = $request->animal;
                 }
                 else {
-                    $picture->validated = $this->isValid($category->filename);
+                    $picture->validated = $this->isValid($clasification->filename);
                     $picture->day = $picture->classifyDay();
                     $picture->animal = $picture->classifyAnimal();
                 }
 
-                $picture->hits = Category::where('filename', $request->filename)->count();
+                $picture->hits = Classification::where('filename', $request->filename)->count();
                 $picture->save();
             }
 
@@ -143,7 +143,7 @@ class PictureController extends Controller
         // si el número por variable coincide con rowcount o es igual a cero,
         // es porque todas las personas respondieron lo mismo
         // entonces no hubo dudas sobre las respuestas
-        $classification = Category::groupBy('filename')->selectRaw('sum(day) as day, sum(animal) as animal, count(filename) as rowcount')->where('filename', $filename)->first();
+        $classification = Classification::groupBy('filename')->selectRaw('sum(day) as day, sum(animal) as animal, count(filename) as rowcount')->where('filename', $filename)->first();
 
         if ($classification) {
 
