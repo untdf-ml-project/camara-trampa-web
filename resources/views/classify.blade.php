@@ -24,6 +24,16 @@
     <title>Cámaras trampa</title>
 </head>
 <body>
+    <div class="float-right pt-1">
+        <a class="btn btn-outline-info" href="{{ route('logout') }}"
+           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+        >
+            {{ __('Logout') }}
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+    </div>
     <div class="container main">
 
         <div class="row justify-content-center">
