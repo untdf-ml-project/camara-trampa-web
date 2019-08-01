@@ -45,7 +45,9 @@ class PictureController extends Controller
      */
     public function edit($filename)
     {
-        $picture = Picture::where('filename', $filename)->with('clasifications')->first();
+        $picture = Picture::where('filename', $filename)
+            ->with('classifications')
+            ->first();
 
         if ($picture) {
             return view('picture', [
