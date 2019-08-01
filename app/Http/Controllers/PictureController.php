@@ -21,7 +21,12 @@ class PictureController extends Controller
      */
     public function index()
     {
-        $picture = Picture::where('validated', 0)->inRandomOrder()->first();
+        // tomo una imagen al azar de las primeras CLASSIFICATION_BATCH_LENGTH sin clasificar
+        $picture = Picture::where('validated', 0)
+            ->take(env('CLASSIFICATION_BATCH_LENGTH'))
+            ->get()
+            ->random();
+
         if ($picture && env('CLASSIFICATION_IS_OPEN')) {
             return view('picture', [
                 'picture' => $picture,
@@ -78,7 +83,9 @@ class PictureController extends Controller
     public function create()
     {
         $files = Storage::files('public');
-        foreach ($files as $item) {
+
+        // orden aleatoreo en la carga en tabla
+        collect($files)->shuffle()->each(function ($item) {
             $extension = explode('.', $item);
             $extension = end($extension);
 
@@ -94,7 +101,8 @@ class PictureController extends Controller
                     $picture->save();
                 }
             }
-        }
+        });
+
         return redirect()->route('about');
     }
 
