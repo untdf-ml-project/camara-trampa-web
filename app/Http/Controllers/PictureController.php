@@ -79,16 +79,20 @@ class PictureController extends Controller
     {
         $files = Storage::files('public');
         foreach ($files as $item) {
-            $extension = end(explode('.', $item));
+            $extension = explode('.', $item);
+            $extension = end($extension);
 
             if (in_array($extension, ['jpg', 'JPG', 'jpeg', 'JPEG'])) {
-                $picture = new Picture();
                 $filename = explode('/', $item);
                 $filename = end($filename);
-                $picture->filename = $filename;
-                $picture->validated = false;
-                $picture->hits = 0;
-                $picture->save();
+                $picture = Picture::firstOrNew(['filename' => $filename]);
+
+                if (!$picture->exists) {
+                    $picture->filename  = $filename;
+                    $picture->validated = false;
+                    $picture->hits      = 0;
+                    $picture->save();
+                }
             }
         }
         return redirect()->route('about');
