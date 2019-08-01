@@ -22,7 +22,7 @@ class PictureController extends Controller
     public function index()
     {
         $picture = Picture::where('validated', 0)->inRandomOrder()->first();
-        if ($picture) {
+        if ($picture && env('CLASSIFICATION_IS_OPEN')) {
             return view('picture', [
                 'picture' => $picture,
                 'count' => Classification::count()
@@ -77,11 +77,11 @@ class PictureController extends Controller
      */
     public function create()
     {
-        $files = Storage::files("public");
+        $files = Storage::files('public');
         foreach ($files as $item) {
-            $extension = explode('.', $item);
-            $extension = end($extension);
-            if (($extension == "jpg") || ($extension == "JPG")) {
+            $extension = end(explode('.', $item));
+
+            if (in_array($extension, ['jpg', 'JPG', 'jpeg', 'JPEG'])) {
                 $picture = new Picture();
                 $filename = explode('/', $item);
                 $filename = end($filename);
